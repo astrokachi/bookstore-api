@@ -4,7 +4,13 @@ const CONFIG = require("./config");
 const dbConnect = require("./db");
 const bookRouter = require("./routes/book");
 const authorRouter = require("./routes/author");
+const logger = require("./logger/logger");
+const { requiresAuth } = require("express-openid-connect");
 const rateLimiter = require("express-rate-limit");
+const helmet = require("helmet");
+const authMiddleware = require("./auth/auth0");
+
+const app = express();
 
 const limiter = rateLimiter({
 	windowMs: 15 * 60 * 1000, // 15 minutes
@@ -13,16 +19,19 @@ const limiter = rateLimiter({
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
-const app = express();
-app.use(bodyParser.json());
-app.use(limiter);
+dbConnect();
 
-app.use("/api/v1/books", bookRouter);
-app.use("/api/v1/authors", authorRouter);
+app.use(bodyParser.json());
+app.use(authMiddleware);
+app.use(limiter);
+app.use(helmet());
+
+app.use("/api/v1/books", requiresAuth(), bookRouter);
+app.use("/api/v1/authors", requiresAuth(), authorRouter);
 
 //error handler middleware
 app.use((error, req, res, next) => {
-	console.log(error);
+	logger.error(error);
 
 	const errorStatus = error.status || 500;
 
@@ -31,7 +40,10 @@ app.use((error, req, res, next) => {
 	next();
 });
 
-dbConnect();
+app.get("/", (req, res) => {
+	res.send("Welcome home");
+});
+
 app.listen(CONFIG.PORT, () => {
-	console.log("server started on localhost", CONFIG.PORT);
+	logger.info(`server started on localhost, ${CONFIG.PORT}`);
 });
