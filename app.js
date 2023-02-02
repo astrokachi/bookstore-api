@@ -3,11 +3,13 @@ const bodyParser = require("body-parser");
 const CONFIG = require("./config");
 const dbConnect = require("./db");
 const bookRouter = require("./routes/book");
+const authorRouter = require("./routes/author");
 
 const app = express();
 app.use(bodyParser.json());
 
 app.use("/api/v1/books", bookRouter);
+app.use("/api/v1/authors", authorRouter);
 
 //error handler middleware
 app.use((error, req, res, next) => {

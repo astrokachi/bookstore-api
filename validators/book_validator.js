@@ -1,14 +1,14 @@
-const joi = require("joi");
+const Joi = require("joi");
 
-const BookSchema = joi.object({
-	title: joi.string().required().min(5).max(255).trim(),
-	shortDescription: joi.string().min(5).max(255).trim(),
-	longDescription: joi.string().min(5).trim(),
-	year: joi.number().integer().required().max(2022),
-	price: joi.number().min(0).required(),
-	createdAt: joi.date().default(Date.now()),
-	isbn: joi.string().required(),
-	updatedAt: joi.date().default(Date.now()),
+const BookSchema = Joi.object({
+	title: Joi.string().required().min(5).max(255).trim(),
+	shortDescription: Joi.string().min(5).max(255).trim(),
+	longDescription: Joi.string().min(5).trim(),
+	year: Joi.number().integer().required().max(2022),
+	price: Joi.number().min(0).required(),
+	createdAt: Joi.date().default(Date.now()),
+	isbn: Joi.string().required(),
+	updatedAt: Joi.date().default(Date.now()),
 });
 
 async function BookValidationMiddleWare(req, res, next) {

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const BlogPost = new Schema(
+const BookSchema = new Schema(
 	{
 		title: {
 			type: String,
@@ -43,9 +43,8 @@ const BlogPost = new Schema(
 			type: Date,
 			default: Date.now(),
 		},
-    
 	},
 	{ timestamps: true }
 );
 
-module.exports = mongoose.model("Blog", BlogPost);
+module.exports = mongoose.model("Book", BookSchema);
