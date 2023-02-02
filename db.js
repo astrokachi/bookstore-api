@@ -1,17 +1,17 @@
 const mongoose = require("mongoose");
 const CONFIG = require("./config");
+const logger = require("./logger/logger");
 
 function dbConnect() {
 	mongoose.connect(CONFIG.MONGODB_URI);
 
 	mongoose.connection.on("connected", () => {
-		console.log("mongo db connected successfully");
+		logger.info("mongo db connected successfully");
 	});
 
 	mongoose.connection.on("error", (err) => {
-		console.log("An error occured while connecting to the mongo db server");
-		console.log(err);
+		logger.error(err);
 	});
 }
 
-module.exports = dbConnect
+module.exports = dbConnect;
